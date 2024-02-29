@@ -10,17 +10,39 @@ app.use(function (_, res, next) {
     next();
 });
 const port = 3000;
-const {getPgVersion} = require('./core/DataBase/index.js')
-
-getPgVersion;
+const { addUser, loginUser } = require('./core/DataBase/connection.js')
 
 app.get('/menu', (request, response) => {
 
 });
 
-app.get('/menu', (request, response) => {
-
+app.post('/signup', async (request, response) => {
+    const info = request.body
+    // console.log(d);
+    try {
+        const result = await addUser(info)
+        response.send(result).status(200)
+    } catch (error) {
+        response.send(400)
+    }
 });
+
+app.get('/signin', async (request, response) => {
+    const u = request.query.username;
+    const p = request.query.password;
+    const info = { "username": u, "password": p }
+    // console.log(d);
+    try {
+        const result = await loginUser(info)
+        response.send(result).status(200)
+    } catch (error) {
+        response.send(400)
+    }
+});
+
+
+
+
 
 
 app.listen(port, () => console.log(`My App Listening at http://localhost:${port}`)); 
