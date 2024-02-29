@@ -1,17 +1,19 @@
-const { Pool } = require('pg');
+// app.js
+const postgres = require('postgres');
 require('dotenv').config();
 
-let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
+let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, ENDPOINT_ID } = process.env;
 
-const pool = new Pool({
+const sql = postgres({
     host: PGHOST,
     database: PGDATABASE,
     username: PGUSER,
     password: PGPASSWORD,
     port: 5432,
-    ssl: {
-        require: true,
+    ssl: 'require',
+    connection: {
+        options: `project=${ENDPOINT_ID}`,
     },
 });
 
-module.exports = {pool};
+module.exports = { sql };
