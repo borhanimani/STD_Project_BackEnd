@@ -1,16 +1,6 @@
 const { sql } = require('./handler.js')
 const { cloudinary } = require('./cloudinary.js')
 
-async function getPgVersion() {
-    const client = await pool.connect();
-    try {
-        const result = await client.query('SELECT version()');
-        console.log(result);
-    } finally {
-        client.release();
-    }
-}
-
 async function addUser(userInfo) {
     // console.log(userInfo);
     try {
@@ -45,10 +35,10 @@ async function loginUser(userInfo) {
     }
 }
 
-async function addMenuItem(userInfo) {
-    console.log(userInfo);
+async function addMenuItem(userInfo, imgUrl, imgId) {
+    console.log('insidee', userInfo);
     try {
-        const result = await sql`INSERT INTO ws_food (name, detail, price, categoryId, photoId) VALUES (${userInfo.name}, ${userInfo.detail}, ${userInfo.price}, 1, ${userInfo.imageName})`;
+        const result = await sql`INSERT INTO ws_food (name, detail, price, categoryId,photoLink,photoId) VALUES (${userInfo.name}, ${userInfo.detail}, ${userInfo.price},${userInfo.categoryId},${imgUrl},${imgId})`;
         return result
     } catch (error) {
         console.log(error);
@@ -61,7 +51,69 @@ async function uploadImage(image, info) {
     try {
         const result = await cloudinary.uploader.upload(image.path,
             { public_id: info.imageName });
-        console.log(result);
+        return result
+    } catch (error) {
+        console.log(error);
+        return error
+    }
+}
+
+async function deleteImage(imageId) {
+    console.log(imageId);
+    try {
+        const result = await cloudinary.uploader.destroy(imageId)
+        return result
+    } catch (error) {
+        console.log(error);
+        return error
+    }
+}
+
+async function addMenuCategory(userInfo) {
+    console.log(userInfo);
+    try {
+        const result = await sql`INSERT INTO ws_food_category (name) VALUES (${userInfo.category})`;
+        return result
+    } catch (error) {
+        console.log(error);
+        return error
+    }
+}
+
+async function getCategories() {
+    try {
+        const result = await sql`SELECT * FROM ws_food_category`;
+        return result
+    } catch (error) {
+        console.log(error);
+        return error
+    }
+}
+
+async function getItems(categoryId) {
+    try {
+        const result = await sql`SELECT * FROM ws_food WHERE categoryId=${categoryId}`;
+        return result
+    } catch (error) {
+        console.log(error);
+        return error
+    }
+}
+
+async function getItemImageId(itemId) {
+    try {
+        const result = await sql`SELECT photoId FROM ws_food WHERE id=${itemId}`;
+        return result
+    } catch (error) {
+        console.log(error);
+        return error
+    }
+}
+
+async function deleteItem(itemId) {
+    try {
+        const result = await sql`DELETE FROM ws_food WHERE id=${itemId}`;
+        return result
     } catch (error) {
         console.log(error);
         return error
@@ -69,5 +121,54 @@ async function uploadImage(image, info) {
 }
 
 
+async function deleteCategoryItems(categoryId) {
+    try {
+        const result = await sql`DELETE FROM ws_food WHERE categoryId=${categoryId}`;
+        return result
+    } catch (error) {
+        console.log(error);
+        return error
+    }
+}
 
-module.exports = { addUser, loginUser, uploadImage, addMenuItem }
+async function deleteCategory(categoryId) {
+    try {
+        const result = await sql`DELETE FROM ws_food_category WHERE id=${categoryId}`;
+        return result
+    } catch (error) {
+        console.log(error);
+        return error
+    }
+}
+
+async function getItemById(itemId) {
+    try {
+        const result = await sql`SELECT * FROM ws_food WHERE id=${itemId}`;
+        return result
+    } catch (error) {
+        console.log(error);
+        return error
+    }
+}
+
+async function updateItem(item, id) {
+    try {
+        const result = await sql`UPDATE ws_food SET name=${item.name}, detail=${item.detail},price=${item.price},categoryid=${item.categoryId}  WHERE id=${id}`;
+        return result
+    } catch (error) {
+        console.log(error);
+        return error
+    }
+}
+
+async function getItemList(id) {
+    try {
+        const result = await sql`Select * From ws_food WHERE categoryid=${id} `;
+        return result
+    } catch (error) {
+        console.log(error);
+        return error
+    }
+}
+
+module.exports = { addUser, loginUser, uploadImage, addMenuItem, addMenuCategory, getCategories, getItems, getItemImageId, deleteItem, deleteImage, deleteCategoryItems, deleteCategory, getItemById, updateItem, getItemList }
