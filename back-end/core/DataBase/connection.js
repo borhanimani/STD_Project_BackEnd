@@ -181,4 +181,24 @@ async function addOrder(info) {
     }
 }
 
-module.exports = { addUser, loginUser, uploadImage, addMenuItem, addMenuCategory, getCategories, getItems, getItemImageId, deleteItem, deleteImage, deleteCategoryItems, deleteCategory, getItemById, updateItem, getItemList, addOrder }
+async function getComments() {
+    try {
+        const result = await sql`Select * From ws_comment`;
+        return result
+    } catch (error) {
+        console.log(error);
+        return error
+    }
+}
+
+async function addComment(info) {
+    try {
+        const result = await sql`INSERT INTO ws_comment (userId,detail,rate) VALUES (${info.userId},${info.detail},${info.rate})`;
+        return result
+    } catch (error) {
+        console.log(error);
+        return error
+    }
+}
+
+module.exports = { addUser, loginUser, uploadImage, addMenuItem, addMenuCategory, getCategories, getItems, getItemImageId, deleteItem, deleteImage, deleteCategoryItems, deleteCategory, getItemById, updateItem, getItemList, addOrder, getComments, addComment }

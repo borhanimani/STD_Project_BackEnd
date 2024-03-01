@@ -12,7 +12,7 @@ app.use(function (_, res, next) {
     next();
 });
 const port = 3000;
-const { addUser, loginUser, uploadImage, addMenuItem, addMenuCategory, getCategories, getItems, getItemImageId, deleteItem, deleteImage, deleteCategoryItems, deleteCategory, getItemById, updateItem, getItemList, addOrder } = require('./core/DataBase/connection.js')
+const { addUser, loginUser, uploadImage, addMenuItem, addMenuCategory, getCategories, getItems, getItemImageId, deleteItem, deleteImage, deleteCategoryItems, deleteCategory, getItemById, updateItem, getItemList, addOrder, getComments, addComment } = require('./core/DataBase/connection.js')
 
 app.post('/signup', async (request, response) => {
     const info = request.body
@@ -126,7 +126,6 @@ app.get('/edit/update/:id', async (request, response) => {
 app.post('/edit/update/item/:id', async (request, response) => {
     const id = request.params.id;
     const item = request.body;
-    console.log('heeey', item);
     try {
         await updateItem(item, id)
         response.sendStatus(200)
@@ -137,7 +136,6 @@ app.post('/edit/update/item/:id', async (request, response) => {
 
 app.get('/menu/:id', async (request, response) => {
     const categoryId = request.params.id;
-    console.log('heeey', categoryId);
     try {
         const list = await getItemList(categoryId);
         console.log(list);
@@ -147,11 +145,31 @@ app.get('/menu/:id', async (request, response) => {
     }
 })
 
-app.post('/order/buy/', async (request, response) => {
+app.post('/order/buy', async (request, response) => {
     const info = request.body;
-    console.log('semi', info);
     try {
         await addOrder(info)
+        response.sendStatus(200)
+    } catch (error) {
+        response.send(400)
+    }
+})
+
+app.get('/comment', async (request, response) => {
+    try {
+        const list = await getComments();
+        console.log(list);
+        response.send(list);
+    } catch (error) {
+        response.send(400)
+    }
+})
+
+app.post('/comment/add', async (request, response) => {
+    console.log('ddddd');
+    const info = request.body;
+    try {
+        await addComment(info)
         response.sendStatus(200)
     } catch (error) {
         response.send(400)
