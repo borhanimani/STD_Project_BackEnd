@@ -12,7 +12,7 @@ app.use(function (_, res, next) {
     next();
 });
 const port = 3000;
-const { addUser, loginUser, uploadImage, addMenuItem, addMenuCategory, getCategories, getItems, getItemImageId, deleteItem, deleteImage, deleteCategoryItems, deleteCategory, getItemById, updateItem, getItemList } = require('./core/DataBase/connection.js')
+const { addUser, loginUser, uploadImage, addMenuItem, addMenuCategory, getCategories, getItems, getItemImageId, deleteItem, deleteImage, deleteCategoryItems, deleteCategory, getItemById, updateItem, getItemList, addOrder } = require('./core/DataBase/connection.js')
 
 app.post('/signup', async (request, response) => {
     const info = request.body
@@ -142,6 +142,17 @@ app.get('/menu/:id', async (request, response) => {
         const list = await getItemList(categoryId);
         console.log(list);
         response.send(list);
+    } catch (error) {
+        response.send(400)
+    }
+})
+
+app.post('/order/buy/', async (request, response) => {
+    const info = request.body;
+    console.log('semi', info);
+    try {
+        await addOrder(info)
+        response.sendStatus(200)
     } catch (error) {
         response.send(400)
     }

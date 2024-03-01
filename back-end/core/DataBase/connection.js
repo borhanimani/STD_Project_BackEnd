@@ -27,7 +27,7 @@ async function loginUser(userInfo) {
 async function loginUser(userInfo) {
     console.log(userInfo);
     try {
-        const result = await sql`SELECT firstname, isAdmin, commented FROM ws_user WHERE username = ${userInfo.username} AND password = ${userInfo.password}`
+        const result = await sql`SELECT id, firstname, isAdmin, commented FROM ws_user WHERE username = ${userInfo.username} AND password = ${userInfo.password}`
         return result
     } catch (error) {
         return error
@@ -171,4 +171,14 @@ async function getItemList(id) {
     }
 }
 
-module.exports = { addUser, loginUser, uploadImage, addMenuItem, addMenuCategory, getCategories, getItems, getItemImageId, deleteItem, deleteImage, deleteCategoryItems, deleteCategory, getItemById, updateItem, getItemList }
+async function addOrder(info) {
+    try {
+        const result = await sql`INSERT INTO ws_order (orderList,totalPrice,userId) VALUES (${info.detail},${info.totalPrice},${info.userId})`;
+        return result
+    } catch (error) {
+        console.log(error);
+        return error
+    }
+}
+
+module.exports = { addUser, loginUser, uploadImage, addMenuItem, addMenuCategory, getCategories, getItems, getItemImageId, deleteItem, deleteImage, deleteCategoryItems, deleteCategory, getItemById, updateItem, getItemList, addOrder }
