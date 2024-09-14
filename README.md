@@ -12,7 +12,7 @@ This is a demo web project which has a frontend and backend parts. This is backe
 
 This part manages request and responses. all requests from frontend side comes to this side, and backend will request to databases (document database and cloudflare database) to make picture and information ready. next the controller will send all data (documents and picture) to frontend side.
 
------PROGRAMMING LANGUAGE-----
+-----LANGUAGES-----
 - node.js
 - express.js
 - JavaScript
