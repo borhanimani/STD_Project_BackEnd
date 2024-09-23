@@ -44,8 +44,9 @@ app.post('/edit/upload', upload.any(), async (request, response) => {
     const information = request.body;
     console.log(information);
     try {
+        console.log('sendinnnng...');
         const { secure_url, public_id } = await uploadImage(image, information.info)
-        // console.log(public_id);
+        console.log('img iddd: '+public_id);
         const b = await addMenuItem(JSON.parse(information.info), secure_url, public_id);
         response.sendStatus(200)
     } catch (error) {
